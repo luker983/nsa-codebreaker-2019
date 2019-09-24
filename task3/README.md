@@ -31,4 +31,4 @@ Name:	codebreaker.ltsnet.net
 Address: 54.197.185.236
 ```
 
-Just a wild guess, the XMPP chat server is probably `chat.terrortime.app` and the auth server is `register.terrortime.app`.
+Just a wild guess, the XMPP chat server is probably `chat.terrortime.app` and the auth server is `register.terrortime.app`. Plugging those IPs into Codebreaker works and we have solved the third task! 
