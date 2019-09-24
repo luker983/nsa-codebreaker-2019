@@ -6,6 +6,6 @@ There are many challenges that we will need to overcome in order to exploit Terr
 
 ## Provided Files
 
-* terrortime.pcapng
+* `terrortime.pcapng`
 
 ## Solution
