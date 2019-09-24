@@ -11,3 +11,6 @@ While analyzing the TerrorTime SQLite database found on the terrorist’s device
 ## Solution
 
 ### Reversing the PIN Process
+
+1. Decompile apk, use `d2j-dex2jar terrorTimeV2.apk` then Luyten to get source.
+2. Figure out how PIN is being encrypted and try to decrypt or get secret somehow
