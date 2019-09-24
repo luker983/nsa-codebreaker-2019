@@ -21,7 +21,7 @@ The first three tasks of the challenge will provide you with everything you need
 
 ## Task Checklist
 
-[ ] Task 1  
+[x] Task 1  
 [ ] Task 2  
 [ ] Task 3  
 [ ] Task 4  
