@@ -29,11 +29,21 @@ ACCESS_NETWORK_STATE
 
 ### Certificate Information
 
+The Android SDK includes many tools for working with apps, including a tool to work with certificates. `apksigner` can be used to print out the certificate information for an APK. My `apksigner` binary was located under `sdk/build-tools/28.0.3/`. 
+
 ```
-$ /Library/Android/sdk/build-tools/28.0.3/apksigner verify --print-certs terror_time.apk
+$ apksigner verify --print-certs terror_time.apk
 Signer #1 certificate DN: CN=dev_terrorTime_928908, OU=TSuite
 Signer #1 certificate SHA-256 digest: 15dc9416dc4a9e2d8e3d833b448da081b463ca910fdaa5195676bbc48496d2aa
 Signer #1 certificate SHA-1 digest: 36d15a486ac4b2c652810ee5af1f98c79f86b3c6
 Signer #1 certificate MD5 digest: e1acb777b06d8d12154dfb10e93e6c4b
 ```
 
+We need the SHA-256 hash and the Common Name (CN):
+
+```
+Signer #1 certificate SHA-256 digest: 15dc9416dc4a9e2d8e3d833b448da081b463ca910fdaa5195676bbc48496d2aa
+CN=dev_terrorTime_928908
+```
+
+That's it! We have access to a more stable version of `terrorTime.apk` now that should be used for the rest of the tasks. 
