@@ -59,13 +59,13 @@ We can now masquerade as Jason! There are two contacts, Jazmin and Aden. The ful
 Jazmin                      | Aden
 ![Jazmin](images/jazmin.png)| ![Aden](images/aden.png)
 
-Okay, let's start with the Cell Leader's username. It isn't in the screenshot above, but Jazmin at one point says _we will not let Aden down_, indicating that the Client ID for the Terror Cell Leader is:
+Okay, let's start with the Cell Leader's username. Jazmin at one point says _we will not let Aden down_, indicating that the Client ID for the Terror Cell Leader is:
 
 ```
 aden--vhost-10@terrortime.app
 ```
 
-The Action Date is next. Both messages mention a time of `0824`. That sounds like 8:24AM to me. Also, in the Aden screenshot you can see that Aden says _Exactly. before the holiday, 4 days_ and Jason says to Jazmin in a seperate conversation _see you before Valentine's Day_. This is a good indicator that the action will take place on 08:24 on February 10, 2020. Converting this time to a Unix timestamp gives us the following integer:
+The Action Date is next. Both messages mention a time of `0824`. That sounds like 8:24AM to me. Also, in the Aden screenshot you can see that Aden says _Exactly. before the holiday, 4 days_ and Jason says to Jazmin in the other conversation _see you before Valentine's Day_. This is a good indicator that the action will take place on 08:24 on February 10, 2020. Converting this time to a Unix timestamp gives us the following integer:
 
 ```
 1581323040
