@@ -5,7 +5,6 @@
 While analyzing the TerrorTime SQLite database found on the terrorist’s device, analysts discovered that the database has cached credentials but requires a pin to log in. If we can determine how the credentials are protected and find a way to recover the pin, we should be able to masquerade as the arrested terrorist. Perform reverse engineering to identify how the terrorist’s credentials are protected and submit the terrorist's Client ID and Client Secret. Once you have uncovered their credentials, masquerade (i.e., login) as him using the TerrorTime app. Review their chat history and assess additional information regarding their organization. Though the app encrypts messages back and forth, the terrorists have previously spoken in some form of code to ensure their plans were protected. To prove completion of this task, you will need to analyze the terrorist's conversation history in order to uncover/deduce the following information:
 
 1. Terror Cell Leader's Username
-2. Action planned by the terrorist cell
 3. The date on which the action will occur
 
 ## Solution
@@ -55,16 +54,19 @@ The APK should already be loaded into Android Studio, so all we need to do is up
 
 ![DB File](images/db.png)
 
-We can now masquerade as Jason! There are two contacts, Jazmin and Aden. 
+We can now masquerade as Jason! There are two contacts, Jazmin and Aden. The full transcript of the conversation can be found in `files/transcript.txt`.
 
 ![Jazmin](images/jazmin.png)
 ![Aden](images/aden.png)
 
+Okay, let's start with the Cell Leader's username. It isn't in the screenshot above, but Jazmin at one point says _we will not let Aden down_, indicating that the Client ID for the Terror Cell Leader is:
 
+```
+aden--vhost-10@terrortime.app
+```
 
-2. Figure out how PIN is being encrypted and try to decrypt or get secret somehow
-3. PIN is sha256
-4. Hash cracker to get Jason's pin
-5. Messages mention 4 days before valentine's day (1581323040) (1581292800)
-6. Aden is leader
-7. 
+The Action Date is next. Both messages mention a time of `0824`. That sounds like 8:24AM to me. Also, in the Aden screenshot you can see that Aden says _Exactly. before the holiday, 4 days_ and Jason says to Jazmin in a seperate conversation _see you before Valentine's Day_. This is a good indicator that the action will take place on 08:24 on February 10, 2020. Converting this time to a Unix timestamp gives us the following integer:
+
+```
+1581323040
+```
