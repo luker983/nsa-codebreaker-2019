@@ -57,6 +57,7 @@ The APK should already be loaded into Android Studio, so all we need to do is up
 We can now masquerade as Jason! There are two contacts, Jazmin and Aden. The full transcript of the conversation can be found in `files/transcript.txt`.
 
 Jazmin                      | Aden
+:--------------------------:|:-----------------------:
 ![Jazmin](images/jazmin.png)| ![Aden](images/aden.png)
 
 Okay, let's start with the Cell Leader's username. Jazmin at one point says _we will not let Aden down_, indicating that the Client ID for the Terror Cell Leader is:
