@@ -24,8 +24,8 @@ The first three tasks of the challenge will provide you with everything you need
 - [x] Task 1  
 - [x] Task 2  
 - [x] Task 3  
-- [ ] Task 4  
-- [ ] Task 5  
+- [x] Task 4  
+- [x] Task 5  
 - [ ] Task 6a  
 - [ ] Task 6b  
 - [ ] Task 7  

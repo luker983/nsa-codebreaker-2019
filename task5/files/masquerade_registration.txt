@@ -1,0 +1,5 @@
+Your IP at whatever the relay is set to receive on: 129.138.139.214:2222
+OAUTH: register.terrortime.app
+Masquerade Username: malia--vhost-10@terrortime.app 
+Any User's Client Secret: 0m9wCBDpSrjOIl
+Whatever PIN you want: 000000
