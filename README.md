@@ -1,6 +1,6 @@
 # NSA Codebreaker Challenge 2019
 
-My solutions to the [NSA Codebreaker Challenge](https://codebreaker.ltsnet.net/home) for 2019. 
+My solutions to the 2019 [NSA Codebreaker Challenge](https://codebreaker.ltsnet.net/home). 
 
 ## Overview
 
