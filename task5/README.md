@@ -37,21 +37,25 @@ It's pretty much just the token and expiration date. Not too interesting. So now
 
 `.pyc` files are compiled Python, so we should probably decompile it if we can using a tool like [uncompyle](https://pypi.org/project/uncompyle6/). `uncompyle6 auth_verify.pyc` reveals the authentication code. It takes in a token and an authenication server to verify that the token is correct. See anything weird here? Wouldn't a verification tool need to know the user it's verifying?? Apparently not. 
 
-That's a serious flaw in the authentication system. We can use ANY user's token to authenticate as ANY OTHER USER we want! Now, that doesn't solve the problem of knowing the keys to be able to encrypt/decrypt messages but it's a great step in the right direction. 
+That's a serious flaw in the authentication system. We can use ANY user's token to authenticate as ANY OTHER USER we want! Now, that doesn't solve the problem of knowing the keys to be able to encrypt/decrypt messages but it's a great step in the right direction. It's time to test it out.
 
-The next step can probably be done two ways:
+First, we have to register a user with the Client ID of the user we want to masquerade as (in this case `aden--vhost-10@terrortime.app`). Then we need to use the Client Secret for any user we have access to (`jason--vhost-10@terrortime.app`).
 
-1. Use the token we just got from Burp and write/use an XMPP client and retrieve the encrypted messages.
-2. Use the app as our XMPP client and see if we can trick it into logging us in as a different user, then sniffing XMPP traffic to get the encrypted messages.
+![Masq](images/masq.png)
 
-The second option sounded more difficult to me at first, but it actually ended up being much easier. Here's the outline:
+If we tried to log in right now, the app would send a token request with the credentials `aden--vhost-10@terrortime.app:0m9wCBDpSrjOIl`. Aden's ID with Jason's secret. This will fail, so how do we get it to succeed? The magic of BurpSuite. Burp can search a request for a certain expression and replace it automatically with whatever we want using the Match and Replace functionality. We want to replace the `Authorization` header with the correct base64 encoded credentials of Jason: `amFzb24tLXZob3N0LTEwQHRlcnJvcnRpbWUuYXBwOjBtOXdDQkRwU3JqT0ls`. 
 
-1. Register a new user with the Cell Leader's ID, but Jason's secret
-2. Set up Burp to replace the token request credentials with Jason's username and secret
-3. Set up a relay to Man-in-the-Middle the XMPP traffic so we can retrieve the messages
+![MaR](images/mar.png)
 
-Any token can be used to get encrypted chats if you use their ID, but a different ID to retrieve token.
-Use burp to use Jason's creds for Aden's key and try all names as cell leader
+Now we can test it by logging in. But first, know that Burp cannot proxy protocols like XMPP, so we will get a token but not be able to log in completely. The solution is to do one log in attempt with the proxy to save the token to the database, then turn off the proxy and log in again to connect to XMPP with the saved token. This will need to be done every hour. Then you should be able to access Aden's contacts.
+
+![Contact](images/contact.png)
+
+Finally. Now we can take a guess as to which one is the top-level organization leader. I just tried them in order and this one ended up working:
+
+```
+malia--vhost-10@terrortime.app
+```
 
 
 ### XMPP Intercept
