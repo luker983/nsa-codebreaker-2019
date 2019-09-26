@@ -68,7 +68,7 @@ python mitm_relay.py -r tcp:2222:chat.terrortime.app:443 -p localhost:8080 -c se
 ```
 * `-r tcp:2222:chat.terrortime.app:443` forwards all incoming traffic on port 2222 to `chat.terrortime.app:443` after being proxied.
 * `-p localhost:8080` tells the relay to proxy all of the traffic through BurpSuite so we can see it there.
-*
+
 This is great, but unfortunately the Android Emulator wouldn't proxy the XMPP traffic through `localhost:2222`. Luckily the developers were nice enough to let us input our own chat server! So we can set the chat server to `127.0.0.1:2222`, then the relay will handle the proxy and communication with the real chat server! 
 
 ![Malia](images/malia.png)
