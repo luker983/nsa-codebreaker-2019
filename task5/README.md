@@ -57,7 +57,28 @@ Finally. Now we can take a guess as to which one is the top-level organization l
 malia--vhost-10@terrortime.app
 ```
 
-
 ### XMPP Intercept
 
-Set XMPP server IP to a MITM relay on my machine and then log in as aden to see encrypted messages.
+The second half of this task is to intercept the last message of the top-level organization leader. We know her username now so we could perform the same exploit to get her contacts, but still no encrypted messages. The problem is that the XMPP connection does not use HTTP so we can't intercept with Burp and it does use TLS, so we can't intercept it with Wireshark.
+
+I attempted to log in to the XMPP server with my own client, but that failed every time so I gave up. Then I started looking into ways to proxy protocols like XMPP. I found this really neat tool called [mitm-\_relay](https://github.com/jrmdev/mitm_relay) that will wrap protocols in an HTTP request, then forward it to BurpSuite. The best of both worlds! I followed the setup instructions on that page so I won't go into it here, but this is what my command ended up looking like:
+
+```
+python mitm_relay.py -r tcp:2222:chat.terrortime.app:443 -p localhost:8080 -c server.pem -k server.key
+```
+* `-r tcp:2222:chat.terrortime.app:443` forwards all incoming traffic on port 2222 to `chat.terrortime.app:443` after being proxied.
+* `-p localhost:8080` tells the relay to proxy all of the traffic through BurpSuite so we can see it there.
+*
+This is great, but unfortunately the Android Emulator wouldn't proxy the XMPP traffic through `localhost:2222`. Luckily the developers were nice enough to let us input our own chat server! So we can set the chat server to `127.0.0.1:2222`, then the relay will handle the proxy and communication with the real chat server! 
+
+![Malia](images/malia.png)
+
+Now we do the double login thing and make sure Burp and mitm_relay are running. If it was set up correctly, Burp should have all of the encrypted messages!
+
+![Msg](images/msg.png)
+
+I'm pretty sure that's the last message. Codebreaker wants it in JSON, which might make you think you need to convert the XML to JSON, but what they actually want is the body of the message. It's already in JSON, but is URL encoded. Highlight the body, send it to the Decoder, and Smart Decode to get it into the right format.
+
+```
+{"messageKey":{"1eJyaFJ5WiwDENSS4gr62iiPSKooVMqpdrgxjuNbpPU=":"NLbVPqLefv2p5JhWTRuSV9BZkK2znAuQyX83vnkOJolm0UQK26nZ27QvFKpVjbQxmPoJZ/M3LhaVZ+Li2suDQQP5bFmzxtblU8sEeduUmyxBbg8ibbujY3sUhf+CJsY+e1Q/SWpNf5dNLKLbuxdGw71lSnxmsyOEPJuuV2qy5xqZQh8xnf/lkGMe0D2ecuBUPC+7Z12o1lAqP0325HXyD9N9XpLcgEyjg7ZF6JSv5KEEGQhdL553HCvSOBpsV3Fl/Y6ZuKvMACukH8JeNAJxQXbCVxVKQcvTDSx8qGFOBCjHUBsebarsmcBKb+LNPeYZEuv5Zn5k2aphBW/01Vi1TA==","Nbv8+Td8u/eqdGpLkLxWszAGOqtLEguyVL1nrLHYRpI=":"A5Qqv5J54R22vWJnlPiK6Fwl5lxWskHRhJhmGwQ/HE3IVEffVX3wwTk2FGZCI9NpWBNshQPZpd6aZ05oEXiIacl0ZLS5neVl05TKLj9kWc2dFXHWlhPj0URVD6mxWJ7yJ2Zh6ItusecqrTuelTQPoy7RJTPondoXCLxhInqqrGDalYKd8megLlnpuIa9tDx8j4nJ/b7FuTwn05wBd2l1k/S2Lg2fVK0t7iVNRZGiNiRiPWr2Gcue0vpe9XERYGebICLWoJCYeh/saayPvJD/Dz+/1xSnD2VNi3z1ns89h/n9JAUSNTFvZr3YtIUu2RsIUcQx0nbO8M7IquEvpTDW+g=="},"messageSig":"00VUG/OcctQ7GyVC50H5/i68t5d5EuSG5Cxu+5f4Rb4=","message":{"msg":"DTWAztvAronwN739L51d2wnjZCoVx/dk+JNTvC9FqhxU2rPpwQeqt+MgdrDvLUVLKyWMh6UsvdS57xmtpkC4UdMQxgVZbgPuN5xKk283nHbmuTdZq8szK0fD16u6soj5U6aJ+Pnzs+Wi9UWgKxcPqDtQqNWnPExhY5oETmxUYqchxTKSzvbEUaQvOBQ3adrsoq387XSNqA3W/OxDu3iPRlEY8VyTL11KhP9nreSQtAL8Wu5S2gR3rKWwQ+4LN/Sc8fnCJup0sLmetcBWNiNYcY0Q5CgMcsTqTdtvcmm9hUIbfOY//F8auAzPhNXVV+nS0ARQj79cLLksmzFZWOuxpw==","iv":"77jB1CUIbhx2vt0H8DToSw=="}}
+```
