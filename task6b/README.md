@@ -19,7 +19,6 @@ Now, our top-level organization leader only has three contacts, likely meaning t
 
 Doing this for all of the cell leaders reveals the following users:
 
-```
 * management
     * malia
     * aden
@@ -37,7 +36,6 @@ Doing this for all of the cell leaders reveals the following users:
 * cell-2
     * ava
     * emmett
-```
 
 This doesn't seem too bad to just brute force, and a lot easier than making our own client to auth into each user and reset the vCard. So, logging into each user and sending the vCard reset request with only our Public Key should do the trick! The request looks like this:
 
