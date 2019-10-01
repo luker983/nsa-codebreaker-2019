@@ -15,7 +15,7 @@ $ openssl rsa -in rsa.private -out rsa.public -pubout -outform PEM
 
 Now, our top-level organization leader only has three contacts, likely meaning three terrorist cells. If each terrortist cell only has two members like all of the cells we've seen so far, then that's a total of 10 users. We can login as all of Malia's contacts to work out the name, and if you look at the login traffic in Burp you can even see which group each terrortist belongs to.
 
-![Group](images/group.png)
+![Groups](images/groups.png)
 
 Doing this for all of the cell leaders reveals the following users:
 
