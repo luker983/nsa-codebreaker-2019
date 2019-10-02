@@ -6,6 +6,8 @@ Though we might be unable to decrypt messages sent and received in the past with
 
 ## Solution
 
+### Recon
+
 In the first half of this task we were able to cover our tracks by deleting entries from vCards. Now we have to take the opposite approach and edit all of the vCards to include our Public Key Pair. First we need some keys though! `crypto/Keygen.java` is generating 2048 bit RSA keys so we will do the same.
 
 ```
@@ -37,20 +39,14 @@ Doing this for all of the cell leaders reveals the following users:
     * ava
     * emmett
 
-This doesn't seem too bad to just brute force, and a lot easier than making our own client to auth into each user and reset the vCard. So, logging into each user and sending the vCard reset request with only our Public Key should do the trick! The request looks like this:
+### Injecting Backdoor
 
-```
-<iq id='0maP3-360' type='set'><vCard xmlns='vcard-temp'><DESC>
------BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0Z9xykmNjTOY05dwyE34
-xhduKMO3DEo2rL74zXrbMh9hxS89qteA5m9OAHPOXo9/YlF1YKwpnejkGgfC4Ozg
-NyZoB5QrJ1Yis9Gb4GMK4fK/4P2PW99FaDUjtx3YYSEEkOyHj/QukgzfGtUw3vIt
-ImO9VEqUKXdcQEgIUzhFIBQLF7f9WcqYUFGsdWVpX+gvDmio0XOpNJ93chFqvjkl
-9LbXiWdxhrnN8MS26PKytKBZOZIIA3Qcmp5rAYinWGW1XeQB8BqaLD30Ujl4wT+Z
-kGEzTbqmQyc7iWMuoI6RfLM5JernsvJ/PJXmOysjIBMqLOBn5hNCNgWc9CH3Xwcu
-ZwIDAQAB
------END PUBLIC KEY-----
-</DESC></vCard></iq>
-```
+This doesn't seem too bad to just brute force, and a lot easier than making our own client to auth into each user and reset the vCard. So, logging into each user and sending the vCard reset request with only our Public Key should do the trick. Except, the keys to this challenge will not be accepted unless users' legitimate public keys are not included in the vCard. So instead what we should do is set up a Burp filter to intercept all server responses containing the vCard and add ours. When the vCard reset takes place then ours will be included along with the spoofed key.
 
-That was not fun, but after changing the vCard for all 10 users we should be able to read all future messages without interfering in legitimate conversations. Except that when I tried to submit my keys it said that future users wouldn't be able to read messages! That didn't make any sense to me because everytime a user logs in they add their keys to the vCard, allowing for conversation.
+![Filter](images/filter.png)
+
+While we're doing this it's a good idea to save each user's public key because we may need it in Task 7. So copy over the legitimate key, add our key to the server response with the vCard, and then forward it!
+
+![Inject](images/inject.png)
+
+That was not fun, but after changing the vCard for all 10 users we should be able to read all future messages without interfering in legitimate conversations!

@@ -6,6 +6,8 @@ The ability to masquerade as a TerrorTime user is helpful, even when we are not 
 
 ## Solution
 
+### Protocol Analysis
+
 In task 5 we learned how to spoof the login of another user to be able to send messages as them. Now we have to figure out how to cover our tracks to make sure the real user won't see our messages or get replies from the user we're messaging. It really helps to have an idea of how the public key infrastructure is set up for the TerrorTime application to figure out an exploit.
 
 Every user should have a public and private key that they use to receive and decrypt messages with repectively. If the server archives all of these messages, it will only be able to have an encrypted copy. And if we have our own public/private key then the real user shouldn't be able to see our spoofed message anyway, right?! Something else must be going on for a user with a different private key to be able to decrypt a message we send. Let's take a look at what a message looks like to figure out what might be going on.
@@ -80,6 +82,10 @@ public static boolean savePublicKey(final String s) {
 This method fetches the vCard on login and checks to see if our key is in that card, if it is not, it updates the card with our information. Let's see if we can see this traffic in BurpSuite while logging into an account.
 
 ![VCard](images/vcard.png)
+
+### vCard Exploitation
+
+#### NOTE: Overwriting vCards will permanently remove the legitimate Public Key from the service unless you save it. You need the Public Key to be correct in Task 6b and Task 7 so make sure to save all Public Keys you overwrite.
 
 Confirmed! The vCard is being retrieved and updated at login. So, if we want to prevent the archived messages from being seen by the legitimate user, we can remove all of the public keys from the vCard response, then our key will be added and we will be the only ones able to read that message!
 

@@ -16,3 +16,4 @@ The arrested terrorist (see Task 3) was not cooperative during initial questioni
 
 ## Solution
 
+Now we know why the `crypto/Keygen.java` class doesn't use traditional Java key generation. My guess is that somehow the keys are generated in a way that makes it possible to derive the private key from the public key. 
