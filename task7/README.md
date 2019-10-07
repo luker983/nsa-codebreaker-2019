@@ -17,3 +17,17 @@ The arrested terrorist (see Task 3) was not cooperative during initial questioni
 ## Solution
 
 Now we know why the `crypto/Keygen.java` class doesn't use traditional Java key generation. My guess is that somehow the keys are generated in a way that makes it possible to derive the private key from the public key. 
+
+Backdoor is generated using pre-built pub/priv key pair and some base64 keys to encrypt/obfuscate one of the primes inside of the resulting pub/priv key pair. The key needs to be recovered using the 256 bit key.
+
+Production of public key:
+
+```
+n = Enc(k1 xor p) xor k2
+q = n / p
+x = is_prime(q)
+if x:
+    done
+else:
+    k2 += 1
+```
