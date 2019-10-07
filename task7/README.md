@@ -31,3 +31,5 @@ if x:
 else:
     k2 += 1
 ```
+
+Recover 512 bit key from 256 bit key, then recover 1024 bit key using the 512 bit key. The 1024 bit key is the backdoored key for all user's private keys, so now we can recover the private key for Malia and Aden, decrypt all the messsages, and foil the plans of the terrorists
