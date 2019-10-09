@@ -52,6 +52,6 @@ for m in msg:
 
     aes = AES.new(key, AES.MODE_CBC, iv)
     x = aes.decrypt(msg)
-    print(x.decode("utf-8"))
+    print(x.decode("utf-8").rstrip())
 #p = aes.decrypt(msg)
 #print(p)
