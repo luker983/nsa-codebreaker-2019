@@ -16,6 +16,9 @@ The arrested terrorist (see Task 3) was not cooperative during initial questioni
 
 ## Solution
 
+
+### Reverse Engineering
+
 Now we know why the `crypto/Keygen.java` class doesn't use traditional RSA key generation. I'm not going to go into the whole reverse engineering process because that would take forever, but I will try to summarize my process in solving this task. 
 
 In terms of tools, I used [Ghidra](https://github.com/NationalSecurityAgency/ghidra) and [GDB](https://www.gnu.org/software/gdb/). Ghidra is really nice because it has a compiler that usually does a decent job of converting the low level instructions into something that looks like C, but it is completely static. GDB on the other hand is dynamic, allowing for interaction with the program while it's running. I've seen a few tools out there that bridge the two to allow them to work together, but I haven't tried any of them out yet. 
@@ -62,6 +65,8 @@ Where `i` is incremented until `N / p` is also prime. We have the public keys fo
 Searching through the binary some more (or maybe you've already discovered this) reveals some hidden options within the script. The `generate_params` section of the code is particularly interesting. Here you can see how the backdoor keys get made! 
 
 There are three sizes that the `keygen` script allows: 512 bit, 1024 bit, and 2048 bit. Each one of these options needs a different sized backdoor key that is half the size of the resulting key. So, `generate_params` creates three different RSA key pairs: 256, 512, and 1024 bit keys. And if you look carefully, you can see that only the 256 bit key is generated legitimately using a safe algorithm! The other two use the backdoor method with the smaller key as the input! 256 bit keys are not that hard to crack, so if we could crack the small key then we could get the 512 bit key through the backdoor method all the way up to the TerrorTime user keys!
+
+### Walking Through the Back Door
 
 Getting the small key is pretty easy, databases like [FactorDB](http://factordb.com/) have factored keys if you provide the modulus. We're going to need it anyway so it's time to start writing code that interacts with RSA keys. First, get the 256 bit key from the `keygen` script. I used `strings` to get it:
 
