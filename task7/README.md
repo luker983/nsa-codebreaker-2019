@@ -114,7 +114,7 @@ Hmmm....that's great but we still don't know what the terrorists are up to. We h
 1. Create a custom `clientDB.db` file with our new private key and masquerade as the organization leader
 2. Write a decryption script that reads messages from our intercepted packets
 
-I think both are probably valid, but I know for sure that the second option works because that's what I did. I was too tired at this point to automate anything so I manually copied and pasted all of the messages into a decryption script. It takes in the encrypted symmetric message key, decrypts it with the private key, then uses the AES key and IV to decrypt the message. And we're pretty much done! Malia's messages talk about a kidnapping and hostage situation revolving Jasiah Brown, all to fund an assassination:
+I think both are probably valid, but I know for sure that the second option works because that's what I did. I was too tired at this point to automate anything so I manually copied and pasted all of the messages into a decryption script. It takes in the encrypted symmetric message key, decrypts it with the private key, then uses the AES key and IV to decrypt the message. And we're pretty much done! Malia's messages talk about a kidnapping and hostage situation involving Jasiah Brown, all to fund an assassination:
 
 ![Malia](images/malia.png)
 
