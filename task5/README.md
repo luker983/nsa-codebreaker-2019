@@ -77,6 +77,8 @@ This is great, but unfortunately the Android Emulator wouldn't proxy the XMPP tr
 
 Now we do the double login thing and make sure Burp and mitm_relay are running. If it was set up correctly, Burp should have all of the encrypted messages!
 
+**Note**: Now that we have a relay running, it might be a good idea to set up a second relay for the chat server so we don't have to do the double login thing. I finished all the tasks without this, but it could save you some time.
+
 ![Msg](images/msg.png)
 
 I'm pretty sure that's the last message. Codebreaker wants it in JSON, which might make you think you need to convert the XML to JSON, but what they actually want is the body of the message. It's already in JSON, but is URL encoded. Highlight the body, send it to the Decoder, and Smart Decode to get it into the right format.
