@@ -21,7 +21,7 @@ The arrested terrorist (see Task 3) was not cooperative during initial questioni
 
 Now we know why the `crypto/Keygen.java` class doesn't use traditional RSA key generation! We have to reverse engineer the `keygen` binary to figure out how to take advantage of this backdoor. I'm not going to go into the whole reverse engineering process because that would take forever, but I will try to summarize my process in solving this task. 
 
-In terms of tools, I used [Ghidra](https://github.com/NationalSecurityAgency/ghidra) and [GDB](https://www.gnu.org/software/gdb/). Ghidra is really nice because it has a compiler that usually does a decent job of converting the low level instructions into something that looks like C, but it is completely static. GDB on the other hand is dynamic, allowing for interaction with the program while it's running. I've seen a few tools out there that bridge the two to allow them to work together, but I haven't tried any of them out yet. 
+In terms of tools, I used [Ghidra](https://github.com/NationalSecurityAgency/ghidra) and [GDB](https://www.gnu.org/software/gdb/). Ghidra is really nice because it has a decompiler that usually does a decent job of converting the low level instructions into something that looks like C, but it is completely static. GDB on the other hand is dynamic, allowing for interaction with the program while it's running. I've seen a few tools out there that bridge the two to allow them to work together, but I haven't tried any of them out yet. 
 
 Anyway, our goal is to figure out how keys are being generated so we can take advantage of the backdoor with the ultimate goal of being able to decrypt ALL TerrorTIme messages past and  present. A good place to start is running the provided `keygen` utility:
 
@@ -52,7 +52,7 @@ Good luck! Here were my results:
 
 ![Keygen Flowchart](images/flow.png)
 
-This took me a very very long time to work out so don't be discouraged if it doesn't come easy to you. The elipses on the right side leads into a repeat of most steps with an added permuation of the R keys, but I didn't need that function to solve the task because all of my keys were solved within the first 1000 iterations. 
+This took me a very very long time to work out so don't be discouraged if it doesn't come easy to you. The elipses on the right side leads into a repeat of most steps with some weird math in the middle, but I was able to reverse all of my keys without going down that rabbit hole. My guess is that it does some meaningless stuff then generates a new prime to try a thousand times.  
 
 In words, the `keygen` program contains three keys that are used in the backdoor process. Two keys are randomly generated (R1 and R2) and one is a pregenerated RSA public key. The final result is a backdoored private/public key pair with the scheme:
 
@@ -60,7 +60,7 @@ In words, the `keygen` program contains three keys that are used in the backdoor
 N = concat((R2 + i) xor Enc(R1 xor p), random_1024_bits)
 ```
 
-Where `i` is incremented until `N / p` is also prime. We have the public keys for each and every user so we know the modulus of the RSA key. We just need to extract the embedded prime to be able to build the private key. To do that, we take the first 1024 bits, `xor` it with every possible R2 value, decrypt the result, and `xor` with R1. That should give us `p`. But wait, how do we decrypt something that was encrypted with an RSA public key??? We need that private key too. That means more RE :(
+Where `i` is incremented until `N / p` is also prime. We have the public keys for each and every user so we know the modulus of the RSA key. We just need to extract the embedded prime to be able to build the private key. To do that, we take the first 1024 bits, `xor` them with every possible R2 value, decrypt the result, and `xor` with R1. That should give us `p`. But wait, how do we decrypt something that was encrypted with an RSA public key??? We need that private key too. That means more RE :(
 
 Searching through the binary some more (or maybe you've already discovered this) reveals some hidden options within the script. The `generate_params` section of the code is particularly interesting. Here you can see how the backdoor keys get made! 
 
@@ -78,7 +78,7 @@ Getting the small key is pretty easy, databases like [FactorDB](http://factordb.
 
 The resulting `p` and `q` values go back into the `recover_small_key.py` script to generate the private key. Success!
 
-Now we have to write a script that will take in the three backdoor keys and the backdoored public key, then spit out a corresponding private key. `reverse1.py` and `reverse2.py` are basically the same version of this, just with different paths. We need to use it to get the 512 bit backdoor private key using our new 256 bit key. Success looks like this:
+Now we have to write a script that will take in the three backdoor keys and the backdoored public key, then spit out a corresponding private key. `reverse1.py` and `reverse2.py` are basically the same version of this, just with different paths. We need to use it to get the 512 bit backdoor private key using our new 256 bit key. A successful key reversal looks like this:
 
 ![512](images/512.png)
 
@@ -127,4 +127,6 @@ I think both are probably valid, but I know for sure that the second option work
 
 ![Aden](images/aden.png)
 
-With how obvious the other answers were, I was surprised that the solution here was `home`, but it worked! We can now foil the terrorists' plans and hopefully never have to reverse engineer anything ever again. The End! 
+With how obvious the other answers were, I was surprised that the solution here was `home`, but it worked! We can now foil the terrorists' plans and hopefully never have to reverse engineer anything ever again.
+
+### The End
