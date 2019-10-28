@@ -16,9 +16,9 @@ The TerrorTime APK file contains metadata that describes various security proper
 
 ### App Permissions
 
-This challenge is a good time to get Android Studio up and running so the app can be emulated. I followed [this](https://codebreaker.ltsnet.net/files/downloads/resource_files/androidEmulator.pdf) guide to getting everything working.
+This challenge is a good time to get Android Studio up and running so the app can be run on an emulator. Make sure that when you load the APK, you choose the *Profile or debug APK* option. If you don't, you might have issues later with logging and the virtual device file explorer. Just in case you've already loaded the APK, you can use *File>Profile or debug APK* to get into the correct state.   
 
-Once the APK is imported into Android Studio we can start looking for permissions. The `AndroidManifest.xml` file contains a lot of the metadata so it's a good place to start. Searching for permissions reveals the permissions needed:
+Once the APK is imported into Android Studio we can start looking for permissions. The `AndroidManifest.xml` file contains a lot of the metadata so it's a good place to start. Searching for `permission` reveals the permissions needed:
 
 ![Permissions](images/perm.png)
 
@@ -46,4 +46,4 @@ Signer #1 certificate SHA-256 digest: 15dc9416dc4a9e2d8e3d833b448da081b463ca910f
 CN=dev_terrorTime_928908
 ```
 
-That's it! We have access to a more stable version of `terrorTime.apk` now that should be used for the rest of the tasks. 
+That's it! We have access to a more stable version of `terrorTime.apk` now that should be used for the rest of the tasks. **MAKE SURE YOU USE THE NEW VERSION**. Many people have had login issues using the first version of the APK. 
