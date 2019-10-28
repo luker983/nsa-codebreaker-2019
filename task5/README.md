@@ -29,11 +29,13 @@ $ echo -n "amFzb24tLXZob3N0LTEwQHRlcnJvcnRpbWUuYXBwOjBtOXdDQkRwU3JqT0ls" | base6
 jason--vhost-10@terrortime.app:0m9wCBDpSrjOIl
 ```
 
+**Note**: Burp cannot proxy XMPP, so this login attempt will fail even though the credentials are correct. 
+
 Great! We could make our own token requests if we wanted and experiment with different combinations of usernames and secrets and might find an exploit, but let's keep following the token for now. What does the reponse look like?
 
 ![Response](images/response.png)
 
-It's pretty much just the token and expiration date. Not too interesting. So now that token should be sent with the XMPP session request to the chat server in order to authenticate a user. Let's take a look at that `auth_verify,pyc` file to figure out how the XMPP server handles authentication.
+It's pretty much just the token and expiration date. Not too interesting. So now that token should be sent with the XMPP session request to the chat server in order to authenticate a user. Let's take a look at that `auth_verify,pyc` file to figure out how the XMPP server handles authentication. 
 
 `.pyc` files are compiled Python, so we should probably decompile it if we can using a tool like [uncompyle](https://pypi.org/project/uncompyle6/). `uncompyle6 auth_verify.pyc` reveals the authentication code. It takes in a token and an authenication server to verify that the token is correct. See anything weird here? Wouldn't a verification tool need to know the user it's verifying?? Apparently not. 
 
@@ -43,7 +45,7 @@ First, we have to register a user with the Client ID of the user we want to masq
 
 ![Masq](images/masq.png)
 
-If we tried to log in right now, the app would send a token request with the credentials `aden--vhost-10@terrortime.app:0m9wCBDpSrjOIl`. Aden's ID with Jason's secret. This will fail, so how do we get it to succeed? The magic of BurpSuite. Burp can search a request for a certain expression and replace it automatically with whatever we want using the Match and Replace functionality. We want to replace the `Authorization` header with the correct base64 encoded credentials of Jason: `amFzb24tLXZob3N0LTEwQHRlcnJvcnRpbWUuYXBwOjBtOXdDQkRwU3JqT0ls`. 
+If we tried to log in right now, the app would send a token request with the credentials `aden--vhost-10@terrortime.app:0m9wCBDpSrjOIl`. Aden's ID with Jason's secret. This will fail, so how do we get it to succeed? The magic of BurpSuite. Burp can search a request for a certain expression and replace it automagically with whatever we want using the Match and Replace functionality. We want to replace the `Authorization` header with the correct base64 encoded credentials of Jason: `amFzb24tLXZob3N0LTEwQHRlcnJvcnRpbWUuYXBwOjBtOXdDQkRwU3JqT0ls`. 
 
 ![MaR](images/mar.png)
 
@@ -61,7 +63,7 @@ malia--vhost-10@terrortime.app
 
 The second half of this task is to intercept the last message of the top-level organization leader. We know her username now so we could perform the same exploit to get her contacts, but still no encrypted messages. The problem is that the XMPP connection does not use HTTP so we can't intercept with Burp and it does use TLS, so we can't intercept it with Wireshark.
 
-I attempted to log in to the XMPP server with my own client, but that failed every time so I gave up. Then I started looking into ways to proxy protocols like XMPP. I found this really neat tool called [mitm-\_relay](https://github.com/jrmdev/mitm_relay) that will wrap protocols in an HTTP request, then forward it to BurpSuite. The best of both worlds! I followed the setup instructions on that page so I won't go into it here, but this is what my command ended up looking like:
+I attempted to log in to the XMPP server with my own client, but that failed every time so I gave up. Then I started looking into ways to proxy protocols like XMPP. I found this really neat tool called [mitm\_relay](https://github.com/jrmdev/mitm_relay) that will wrap protocols in an HTTP request, then forward it to BurpSuite. The best of both worlds! I followed the setup instructions on that page so I won't go into it here, but this is what my command ended up looking like:
 
 ```
 python mitm_relay.py -r tcp:2222:chat.terrortime.app:443 -p localhost:8080 -c server.pem -k server.key
@@ -69,7 +71,7 @@ python mitm_relay.py -r tcp:2222:chat.terrortime.app:443 -p localhost:8080 -c se
 * `-r tcp:2222:chat.terrortime.app:443` forwards all incoming traffic on port 2222 to `chat.terrortime.app:443` after being proxied.
 * `-p localhost:8080` tells the relay to proxy all of the traffic through BurpSuite so we can see it there.
 
-This is great, but unfortunately the Android Emulator wouldn't proxy the XMPP traffic through `localhost:2222`. Luckily the developers were nice enough to let us input our own chat server! So we can set the chat server to `127.0.0.1:2222`, then the relay will handle the proxy and communication with the real chat server! 
+This is great, but unfortunately the Android Emulator wouldn't proxy the XMPP traffic through `localhost:2222`. Luckily the developers were nice enough to let us input our own chat server! So we can set the chat server to our host machine plus the port the relay is listening on (`10.0.2.2:2222`), then the relay will handle the proxy and communication with the real chat server! 
 
 ![Malia](images/malia.png)
 
