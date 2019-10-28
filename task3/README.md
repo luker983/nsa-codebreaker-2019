@@ -18,6 +18,8 @@ Analysts found TerrorTime installed on a device that was taken from a terrorist 
 
 That's not much at all! It looks like there are two hosts, `chat.terrortime.app` and `register.terrortime.app`. `nslookup` can be used to get the IP addresses for these domains. 
 
+### DNS Lookups
+
 ```
 $ nslookup chat.terrortime.app
 Non-authoritative answer:
