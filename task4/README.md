@@ -50,7 +50,7 @@ The PIN is cracked! Now the DB file can be imported into Android Studio and we c
 
 ### Message Analysis
 
-The APK should already be loaded into Android Studio, so all we need to do is upload the `jason--vhost-10@terrortime.app` DB file and we should be able to log in using the Client ID and PIN. The *Device File Explorer* is usefult for modifying files on the virtual device while it's running. The DB file can be found in `data/data/com.badguy.terrortime/databases`:  
+The APK should already be loaded into Android Studio, so all we need to do is upload the `jason--vhost-10@terrortime.app` DB file and we should be able to log in using the Client ID and PIN. The Device File Explorer is useful for modifying files on the virtual device while it's running. The DB file can be found in `data/data/com.badguy.terrortime/databases`:  
 
 ![DB File](images/db.png)
 
