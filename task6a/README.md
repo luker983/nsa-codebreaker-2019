@@ -10,7 +10,7 @@ The ability to masquerade as a TerrorTime user is helpful, even when we are not 
 
 In task 5 we learned how to spoof the login of another user to be able to send messages as them. Now we have to figure out how to cover our tracks to make sure the real user won't see our messages or get replies from the user we're messaging. It really helps to have an idea of how the public key infrastructure is set up for the TerrorTime application to figure out an exploit.
 
-Every user should have a public and private key that they use to receive and decrypt messages with repectively. If the server archives all of these messages, it will only be able to have an encrypted copy. And if we have our own public/private key then the real user shouldn't be able to see our spoofed message anyway, right?! Something else must be going on for a user with a different private key to be able to decrypt a message we send. Let's take a look at what a message looks like to figure out what might be going on.
+Every user should have a public and private key that they use to receive and decrypt messages with respectively. If the server archives all of these messages, it will only be able to have an encrypted copy. And if we have our own public/private key then the real user shouldn't be able to see our spoofed message anyway, right?! Something else must be going on for a user with a different private key to be able to decrypt a message we send. Let's take a look at what a message looks like to figure out what might be going on.
 
 ![Message](images/msg.png)
 
@@ -37,9 +37,9 @@ for (int j = 0; j < jsonArray2.length(); ++j) {
 }
 ```
 
-If we can't remove or modify the fingerprint, maybe we could modify the key? The key isn't verified for the sender by the recipient and it would prevent the real user from decrypting the message upon login. However, that would only prevent them from getting the messages we spoof, not the replies because a sender has their own copy of the public keys for their recipient. 
+If we can't remove or modify the fingerprint, maybe we could modify the key? The sender's key isn't verified by the recipient and it would prevent the real user from decrypting the message upon login. However, that would only prevent them from getting the messages we spoof, not the replies because a sender has their own copy of the public keys for their recipient. 
 
-Perhaps we can go to the source? The list of public keys has to come from somewhere and we definitely have the ability to update it because everyime we generate a new public key pair it gets added to the list. Otherwise we wouldn't be able to spoof messages. If we can add, we might also be able to delete.
+Perhaps we can go to the source? The list of public keys has to come from somewhere and we definitely have the ability to update it because everytime we generate a new public key pair by registering a masqueraded user it gets added to the list. Otherwise we wouldn't be able to spoof messages. If we can add, we might also be able to delete.
 
 Doing a quick search for anything mentioning public keys, `grep -ir "publickey" ./` gives us a bunch of results, but towards the bottom there are a few references to something called `savePublicKey` and `savePublicKeyToVCard` in `LoginActivity.java`. A vCard is a Virtual Contact Card, just something that each client has with some information. If this app is using the vCard to exchange Public Keys, we can probably manipulate the key update on login. The VCardHelper.java file contains the `savePublicKey` method:
 
@@ -79,7 +79,7 @@ public static boolean savePublicKey(final String s) {
     }
 ```
 
-This method fetches the vCard on login and checks to see if our key is in that card, if it is not, it updates the card with our information. Let's see if we can see this traffic in BurpSuite while logging into an account.
+This method fetches the vCard on login and checks to see if our key is in that card, if it is not, it updates the card with our information. Let's see if we can locate this traffic in BurpSuite when logging into an account.
 
 ![VCard](images/vcard.png)
 
@@ -131,4 +131,4 @@ Now any messages we send will fulfill the challenge requirements as long as the 
 }
 ```
 
-Our spoofed user accounts for one of the `messageKey` fields here and our Cell Leader accounts for the other four and no one besides us and the Cell Leader have access to these messages, archived or not. 
+Our spoofed user accounts for one of the `messageKey` fields here and our Cell Leader accounts for the other four. No one besides us and the Cell Leader have access to these messages, archived or not. 
